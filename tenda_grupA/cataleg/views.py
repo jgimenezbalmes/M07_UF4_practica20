@@ -14,3 +14,6 @@ def veure_tots(request):
     resposta = Producte.objects.all()
     serializer = ProducteSerializer(resposta, context={'request': request}, many=True)
     return Response(serializer.resposta)
+
+@api_view(['POST'])
+def afegir_producte(request, nomP)
