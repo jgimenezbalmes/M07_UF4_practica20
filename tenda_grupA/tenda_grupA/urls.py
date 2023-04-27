@@ -19,5 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #Crida a la app cataleg
     path('cataleg/', include('cataleg.urls')),
 ]

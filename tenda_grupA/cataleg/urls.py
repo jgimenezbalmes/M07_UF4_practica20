@@ -2,7 +2,8 @@ from django.urls import path
 
 from. import views
 
-
+#Dins de cataleg, trobem aquestes subrutes
+#Els <str:xxx> ens permeten passar parametres a les views
 urlpatterns = [
     path('', views.veure_tots, name="llistat"),
     path('<str:pk>', views.veure_producte, name="un_producte"),
