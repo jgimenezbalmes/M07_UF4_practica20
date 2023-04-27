@@ -2,18 +2,34 @@ from django.shortcuts import render
 import random
 from django.http import JsonResponse
 
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from .models import Producte
+from .serializers import ProducteSerializer
+
 # Create your views here.
 @api_view(['GET'])
-def veure_producte(request, id):
-    resposta = Producte.objects.get(idProducte = id)
-    serializer = ProducteSerializer(resposta, context={'request': request}, many=True)
-    return Response(serializer.resposta)
+def veure_producte(request, pk):
+    data = Producte.objects.get(idProducte = pk)
+    serializer = ProducteSerializer(data, context={'request': request}, many=False)
+    return Response(serializer.data)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def veure_tots(request):
-    resposta = Producte.objects.all()
-    serializer = ProducteSerializer(resposta, context={'request': request}, many=True)
-    return Response(serializer.resposta)
+    if request.method == 'GET':
+        data = Producte.objects.all()
+        serializer = ProducteSerializer(data, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = ProducteSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def afegir_producte(request, nomP, preuP, fabP, origenP, cadP, descP):
