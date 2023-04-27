@@ -37,3 +37,9 @@ def actualitzar_producte(request, idP, nomP, preuP, fabP, origenP, cadP, descP):
     serializer = ProducteSerializer(prod, context={'request': request})
 
     return Response(serializer.data)
+
+@api_view(['DELETE'])
+def elimina_producte(request, idP):
+    prod = Producte.objects.filter(idProducte=idP)
+    prod.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
