@@ -31,13 +31,13 @@ def veure_tots(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(['GET','POST'])
 def afegir_producte(request, nomP, preuP, fabP, origenP, cadP, descP):
     prod= Producte(nom = nomP, preu= preuP, fabricant=fabP, origen=origenP, caducitat=cadP, descripcio=descP)
     prod.save()
     return Response({'success': 'Producte creat amb exit.'}, status=status.HTTP_201_CREATED)
 
-@api_view(['PUT'])
+@api_view(['GET','PUT'])
 def actualitzar_producte(request, idP, nomP, preuP, fabP, origenP, cadP, descP):
     try:
         prod = Producte.objects.get(idProducte=idP)
@@ -54,7 +54,7 @@ def actualitzar_producte(request, idP, nomP, preuP, fabP, origenP, cadP, descP):
 
     return Response(serializer.data)
 
-@api_view(['DELETE'])
+@api_view(['GET','DELETE'])
 def elimina_producte(request, idP):
     prod = Producte.objects.filter(idProducte=idP)
     prod.delete()
