@@ -41,12 +41,15 @@ def carreto_id(request, pk):
 @api_view(['GET', 'POST'])
 def carreto_add_form(request):
     form = CarretoForm(request.POST)
+    #Context del formulari
+    context = {'forms':form}
     if request.method == 'POST':
         #Si es un metode post i el valid, envia el formulari
         if form.is_valid():
             #Si es valid l'envia
             form.save()
-    context = {'forms':form}
+            #Redirecciona al template
+            return render(request,'carreto_ok.html',context)
     return render(request,'form.html',context)
 
 #funcio que es crida per modificar un carreto
@@ -55,25 +58,29 @@ def carreto_modify_form(request,pk):
   #Agafa les dades del 'carreto' en concret
     carreto = Carreto.objects.get(idCarreto = pk)
     form = CarretoForm(instance=carreto)
+    #Context del formulari
+    context = {'forms':form}
     if request.method == 'POST':
         form = CarretoForm(request.POST, instance=carreto)
     if form.is_valid():
         #Guarda els canvis
         form.save()
-        # redirecciona a la 'url' /carretos
-    context = {'forms':form}
+        #Redirecciona al template
+        return render(request,'carreto_ok.html',context)
     return render(request,'form.html',context)
 
 #funcio que es crida per eliminar un carreto
-@api_view(['GET', 'PUT','POST','DELETE'])
+@api_view(['GET','DELETE'])
 def carreto_delete(request,pk):
-    #Agafa les dades del 'carreto' en concret
-    carreto = Carreto.objects.get(idCarreto = pk)
-    if request.method == 'POST':
-        #Esborra aquest en concret
+    #Context del formulari
+    try:
+        carreto = Carreto.objects.get(idCarreto = pk)
         carreto.delete()
-    #context = {'remove':carreto}
-    #return render(request,'form.html',context)
-    #return render(request,'form.html',context)
+        return render(request,'carreto_ok.html')   
+    except Carreto.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    
+
 
 

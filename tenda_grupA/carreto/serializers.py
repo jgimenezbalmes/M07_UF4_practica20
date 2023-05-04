@@ -11,7 +11,7 @@ from .serializers import *
 class CarretoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carreto
-        fields = ('idCarreto', 'productes')
+        fields = ('idCarreto', 'nomCarreto','productes')
 
 
 
