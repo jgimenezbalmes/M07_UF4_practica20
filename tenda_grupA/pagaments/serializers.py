@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Pagament
 
-class UserSerializer(serializers.ModelSerializer):
+class PagamentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pagament

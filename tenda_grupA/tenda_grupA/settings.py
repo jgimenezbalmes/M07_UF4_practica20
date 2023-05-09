@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'corsheaders',
     #Tambe importem la nostra app
     'cataleg',
-    'login'
+    'login',
+    'pagaments'
 ]
 
 MIDDLEWARE = [
