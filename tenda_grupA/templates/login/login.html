@@ -14,7 +14,9 @@
           <label for="password">Password</label>
           <input type="password" class="form-control" id="password" name="password" required>
         </div>
+        <!-- Si hi ha un missatge d'error...-->
         {% if error_message %}
+        <!-- S'agafa l'error passat per context i s'ensenya-->
           <div class="alert alert-danger">{{ error_message }}</div>
         {% endif %}
         <button type="submit" class="btn btn-primary btn-block">Login</button>
