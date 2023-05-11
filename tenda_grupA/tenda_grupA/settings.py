@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     #Tambe importem la nostra app
     'carreto'
     'cataleg',
-    'login'
+    'login',
+    'pagaments'
 ]
 
 MIDDLEWARE = [
