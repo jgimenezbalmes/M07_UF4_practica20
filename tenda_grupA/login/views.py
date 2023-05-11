@@ -7,51 +7,46 @@ from .models import User
 
 @api_view(['GET', 'POST'])
 def login_try(request):
+
+    context = {}
+
     if request.method == 'POST':
-        # Retrieve the username and password from the login form
+        # S'agafa el mail i el password 
         identificador = request.POST['mail']
         passwd = request.POST['password']
 
-        # Check whether the username is an email or a nickname
-        if '@' in identificador:
-            # Check for the user by email
-            try:
-                user = User.objects.get(mail=identificador, password=passwd)
-            except User.DoesNotExist:
-                user = None
-        else:
-            # Check for the user by nickname
-            try:
-                user = User.objects.get(userNick=identificador, password=passwd)
-            except User.DoesNotExist:
-                user = None
+        # Es guarda l'usuari de la taula usuari que te el mail i contrassenya passats
+        try:
+            user = User.objects.get(mail=identificador, password=passwd)
+            #Si no existeix, l'usuari es guarda com a None
+        except User.DoesNotExist:
+            user = None
 
-        # If the user exists, log them in and redirect to the home page
+        # Si l'usuari no es Null...
         if user is not None:
-            # You may want to customize this logic based on how you've implemented authentication in your project
-            # Here, we're simply setting a session variable to indicate that the user is logged in
+            #Es guarda a la sessió el nick de l'usuari aconseguit
             request.session['userNick'] = user.userNick
+            #Es redirigeix a la url de home
             return redirect('home')
         else:
-            # If the user does not exist, render the login page with an error message
+            #Si l'usuari no existeix, es passa un missatge d'error i es torna a carregar la pagina de login.
             context = {'error_message': 'Usuari, mail o contrasenya erronis'}
             return render(request, 'login/login.html', context)
 
     else:
-        # If the request method is GET, render the login page
-        context = {'error_message': 'Usuari, mail o contrasenya erronis'}
+        #Si no es fes post, es carrega el template (de normal aixo es a l'inici)
         return render(request, 'login/login.html', context)
 
 
 
 def home(request):
-    # Retrieve the user's email from the session
+    # S'agafa el nick guardat al view anterior
     user_nick = request.session.get('userNick')
 
-    # If the user is not logged in, redirect to the login page
+    # Si no es troba, es redirigeix al login
     if not user_nick:
         return redirect('login')
 
-    # Otherwise, render the home page with the user's email
+    # Si sí es troba es fa render del template de home, passant el nick de l'usuari
     return render(request, 'login/home.html', {'user_nick': user_nick})
 

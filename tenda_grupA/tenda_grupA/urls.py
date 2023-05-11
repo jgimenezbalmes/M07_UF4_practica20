@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+#Aquestes urls criden als arxius urls.py de les diferents apps del projecte
 urlpatterns = [
     path('admin/', admin.site.urls),
     #Crida a la app cataleg
     path('cataleg/', include('cataleg.urls')),
     path('login/', include('login.urls')),
-    path('pagaments/', include('pagaments.urls'))
+    path('pagaments/', include('pagaments.urls')),
+    path('carreto/', include('carreto.urls'))
 ]
