@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     #Tambe importem la nostra app
+    'carreto'
     'cataleg',
     'login'
 ]

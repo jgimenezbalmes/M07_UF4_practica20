@@ -23,5 +23,6 @@ urlpatterns = [
     #Crida a la app cataleg
     path('cataleg/', include('cataleg.urls')),
     path('login/', include('login.urls')),
-    path('pagaments/', include('pagaments.urls'))
+    path('pagaments/', include('pagaments.urls')),
+    path('carreto/', include('carreto.urls'))
 ]
