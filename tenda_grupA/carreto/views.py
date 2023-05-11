@@ -6,7 +6,10 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 
 #Importamos models
-from .models import Producte, Carreto
+from login.models import User
+from cataleg.models import Producte
+from carreto.models import Carreto
+
 from .serializers import *
 from django.http import JsonResponse
 
@@ -37,7 +40,7 @@ def carreto_id(request, pk):
     except Carreto.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-#funcoio que es crida per afegir un carreto
+#funcoio que es crida per afegir un carreto FORMULARI
 @api_view(['GET', 'POST'])
 def carreto_add_form(request):
     form = CarretoForm(request.POST)
@@ -52,7 +55,25 @@ def carreto_add_form(request):
             return render(request,'carreto_ok.html',context)
     return render(request,'form.html',context)
 
-#funcio que es crida per modificar un carreto
+
+@api_view(['GET', 'POST'])
+def carreto_add(request, productesC, userC):
+    print("mariajoseeee {} <-> {}".format(productesC,userC))
+    #Fa una llista dels ids de productes
+    productesList = [int(e) for e in productesC.split(",")]
+    #Aconsegueix el user amb aquest id
+    myUser = User.objects.get(idUser=int(userC))
+    print("mi user {}".format(myUser))
+    #Aconsegueix els productes per id
+    myProducts = Producte.objects.filter(idProducte__in=productesList)
+    print("mi user {}".format(myUser))
+    carr = Carreto(user=myUser)
+    carr.save()
+    carr.productes.set(myProducts)
+    return Response({'success': 'Carreto creat'}, status=status.HTTP_201_CREATED)
+
+
+#funcio que es crida per modificar un carreto FORMULARI
 @api_view(['GET', 'PUT','POST'])
 def carreto_modify_form(request,pk):
   #Agafa les dades del 'carreto' en concret
@@ -69,18 +90,36 @@ def carreto_modify_form(request,pk):
         return render(request,'carreto_ok.html',context)
     return render(request,'form.html',context)
 
+#funcio que es crida per modificar un carreto
+@api_view(['GET','PUT'])
+def carreto_modify(request, idC, productesC, userC):
+    #Mira si existeix el carreto
+    try:
+        prod = Carreto.objects.get(idCarreto=int(idC),user=int(userC))
+        #Fa un llistat dels productes passats
+        productesList = [int(e) for e in productesC.split(",")]
+        #Aconsegueix els productes per id
+        myProducts = Producte.objects.filter(idProducte__in=productesList)
+        prod.save()
+        prod.productes.set(myProducts)
+        serializer = CarretoSerializer(prod, context={'request': request})
+        return Response(serializer.data)
+    except Carreto.DoesNotExist:
+        #Sino retorna error
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 #funcio que es crida per eliminar un carreto
 @api_view(['GET','DELETE'])
-def carreto_delete(request,pk):
-    #Context del formulari
+def carreto_delete(request, pk):
+    #Esborra el carreto a partir de una id
     try:
         carreto = Carreto.objects.get(idCarreto = pk)
         carreto.delete()
-        return render(request,'carreto_ok.html')   
+        return Response(status=status.HTTP_204_NO_CONTENT)
     except Carreto.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     
-
 
 
