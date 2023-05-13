@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     #Tambe importem la nostra app
-    'carreto'
+    'carreto',
     'cataleg',
     'login',
-    'pagaments'
+    'pagaments',
+    'comandes'
 ]
 
 MIDDLEWARE = [

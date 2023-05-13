@@ -57,21 +57,15 @@ def carreto_add_form(request):
 
 
 @api_view(['GET', 'POST'])
-def carreto_add(request, productesC, userC):
-    print("mariajoseeee {} <-> {}".format(productesC,userC))
+def carreto_add(request, productesC):
     #Fa una llista dels ids de productes
     productesList = [int(e) for e in productesC.split(",")]
-    #Aconsegueix el user amb aquest id
-    myUser = User.objects.get(idUser=int(userC))
-    print("mi user {}".format(myUser))
-    #Aconsegueix els productes per id
     myProducts = Producte.objects.filter(idProducte__in=productesList)
-    print("mi user {}".format(myUser))
-    carr = Carreto(user=myUser)
+    #Un carreto per defecte no es comprat
+    carr = Carreto(esComprat=False)
     carr.save()
     carr.productes.set(myProducts)
     return Response({'success': 'Carreto creat'}, status=status.HTTP_201_CREATED)
-
 
 #funcio que es crida per modificar un carreto FORMULARI
 @api_view(['GET', 'PUT','POST'])
@@ -92,10 +86,10 @@ def carreto_modify_form(request,pk):
 
 #funcio que es crida per modificar un carreto
 @api_view(['GET','PUT'])
-def carreto_modify(request, idC, productesC, userC):
+def carreto_modify(request, idC, productesC):
     #Mira si existeix el carreto
     try:
-        prod = Carreto.objects.get(idCarreto=int(idC),user=int(userC))
+        prod = Carreto.objects.get(idCarreto=int(idC))
         #Fa un llistat dels productes passats
         productesList = [int(e) for e in productesC.split(",")]
         #Aconsegueix els productes per id
@@ -123,3 +117,21 @@ def carreto_delete(request, pk):
     
 
 
+#funcio que es crida per modificar un carreto
+@api_view(['GET','PUT'])
+def carreto_pagar(request, idC):
+    #Agafa el Carreto per id
+    try:  
+        carr = Carreto.objects.get(idCarreto=idC)
+    except Carreto.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    #Si el producte
+    if carr.esComprat == True:
+        #Si ja l'has pagat no et deixa tornar a pagar
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    else:
+        #El marca com a pagat
+        carr.esComprat = True
+        carr.save()
+        serializer = CarretoSerializer(carr, context={'request': request}, many=False)
+        return Response(serializer.data)
