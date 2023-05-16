@@ -8,8 +8,11 @@ class Comanda(models.Model):
     #Cada comanda te diferent carretoms
     carretons = models.ManyToManyField(Carreto)
     #la comanda es d'un usuari
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=False,
+    )
 
-    
     def __str__(self):
         return "{} - {}".format(self.idComanda, self.carretons, self.user)
